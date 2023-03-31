@@ -1,1 +1,1 @@
-alert("may");
+console.log("object");
