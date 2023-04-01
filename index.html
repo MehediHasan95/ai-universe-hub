@@ -26,6 +26,35 @@
         id="data-container"
         class="row container d-flex justify-content-center mx-auto"
       ></section>
+      <div class="d-flex justify-content-center my-5">
+        <button id="see-more" class="btn btn-danger">See More</button>
+      </div>
+
+      <section>
+        <div
+          class="modal fade"
+          id="staticBackdrop"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body" id="show-details">...</div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script

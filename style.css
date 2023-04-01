@@ -1,1 +1,9 @@
+.main-card {
+  height: 400px;
+  position: relative;
+}
 
+.card-details {
+  position: absolute;
+  bottom: 0;
+}
