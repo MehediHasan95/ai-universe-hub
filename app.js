@@ -24,6 +24,7 @@ const displayData = (data) => {
       <h5>${e.name}</h5>
       <p>${e.published_in}</p>
     </div>
+    <i class="bi bi-reddit"></i>
     <p>Details</p>
   </div>
     `;
