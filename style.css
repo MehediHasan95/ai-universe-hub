@@ -11,3 +11,13 @@
 .custom-bg {
   background-color: #fef7f7;
 }
+
+.img-container {
+  position: relative;
+}
+
+.accuracy {
+  position: absolute;
+  top: 10px;
+  right: 10;
+}

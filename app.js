@@ -1,7 +1,14 @@
 const loadAllData = () => {
   fetch("https://openapi.programming-hero.com/api/ai/tools")
     .then((res) => res.json())
-    .then((data) => displayData(data.data.tools));
+    .then((data) => {
+      if (data.data.tools.length) {
+        displayData(data.data.tools);
+        loadingSpinner("d-none");
+      } else {
+        loadingSpinner("block");
+      }
+    });
 };
 loadAllData();
 
@@ -11,7 +18,6 @@ document.getElementById("see-more").addEventListener("click", function () {
 
 const displayData = (data) => {
   const container = document.getElementById("data-container");
-
   data.forEach((elements) => {
     const div = document.createElement("div");
     div.classList.add("p-3", "border", "col-lg-3", "m-3", "p-0");
@@ -58,9 +64,10 @@ const displayDetails = (details) => {
     features,
     integrations,
     input_output_examples,
+    accuracy,
   } = details;
 
-  console.log(features);
+  console.log(details);
 
   let singleFeatures = [];
   for (const e in features) {
@@ -70,14 +77,18 @@ const displayDetails = (details) => {
   div.innerHTML = `
   <div class="d-flex justify-content-between">
   <div class="w-50 m-2 rounded-3 p-2 border custom-bg">
-  <p>${description}</p>
+  <p class="fs-4 fw-bold">${description}</p>
   <div class="d-flex justify-content-evenly">
-  ${pricing
-    .map(
-      (e) =>
-        `<div class="py-3 text-center w-25 m-2 bg-white rounded-3">${e.price} ${e.plan}</div>`
-    )
-    .join("")}
+ ${
+   pricing
+     ? `${pricing
+         .map(
+           (e) =>
+             `<div class="py-3 text-center w-25 m-2 bg-white rounded-3 border">${e.price} <br/> ${e.plan}</div>`
+         )
+         .join("")}`
+     : `<p>Not found</p>`
+ }
   </div>
   <div class="d-flex justify-content-evenly">
       <ul>
@@ -87,18 +98,42 @@ const displayDetails = (details) => {
       <div>
       <ul>
       <p class="fw-bold">Integrations</p>
-        ${integrations.map((e) => `<li>${e}</li>`).join("")}
+       ${
+         integrations
+           ? ` ${integrations.map((e) => `<li>${e}</li>`).join("")}`
+           : `<p class="text-center text-danger">Not found</p>`
+       }
       </ul>
       </div>
   </div>
 
   </div>
   <div class="w-50 m-2 p-2 rounded-3 border">
-  <img src="${image_link[0]}" alt="" class="img-fluid rounded-3 border" />
-  <p class="text-center">${input_output_examples[0].input}</p>
-  <p class="text-center">${input_output_examples[0].output}</p>
+  <div class="img-container">
+    <img src="${image_link[0]}" alt="" class="img-fluid rounded-3 border" />
+    <span class="bg-danger text-white rounded-3 p-2 accuracy">
+   ${
+     accuracy.score ? ` ${accuracy.score}% accuracy` : "Accuracy not found"
+   }</span>   
+  </div>
+ ${
+   input_output_examples
+     ? ` <p class="text-center">${input_output_examples[0].input}</p>`
+     : `<p class="text-center text-danger">Not found</p>`
+ }
+ ${
+   input_output_examples
+     ? ` <p class="text-center">${input_output_examples[0].output}</p>`
+     : `<p class="text-center text-danger">Not found</p>`
+ }
   </div>
   </div>
   `;
   container.appendChild(div);
+};
+
+// spinner
+const loadingSpinner = (toggle) => {
+  const spinner = document.getElementById("spinner");
+  spinner.setAttribute("class", toggle);
 };
