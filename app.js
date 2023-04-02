@@ -1,5 +1,4 @@
 const loadAllData = (limit) => {
-  console.log(limit);
   fetch("https://openapi.programming-hero.com/api/ai/tools")
     .then((res) => res.json())
     .then((data) => {
@@ -11,22 +10,24 @@ const loadAllData = (limit) => {
       }
     });
 };
-
 loadAllData(0);
+
 document.getElementById("see-more").addEventListener("click", function () {
   loadAllData(100);
 });
 
 const displayData = (data, limit) => {
   const showAll = document.getElementById("see-more");
+
   if (limit < 6) {
     data = data.slice(0, 6);
     showAll.classList.remove("d-none");
   } else {
     showAll.classList.add("d-none");
   }
-
   const container = document.getElementById("data-container");
+  container.textContent = "";
+
   data.forEach((elements) => {
     const div = document.createElement("div");
     div.classList.add("p-3", "border", "col-lg-3", "m-3", "p-0");
@@ -45,12 +46,20 @@ const displayData = (data, limit) => {
         <h5>${name}</h5>
         <p><i class="bi bi-calendar-check-fill"></i> ${published_in}</p>
       </div>
-      <i onclick="loadDetails('${id}')" class="bi bi-arrow-right-circle-fill" data-bs-toggle="modal"
+      <i onclick="loadDetails('${id}')" class="bi bi-arrow-right-circle-fill fs-2" data-bs-toggle="modal"
       data-bs-target="#staticBackdrop"></i>
     </div>
     </div>
     `;
     container.appendChild(div);
+  });
+
+  // sort
+  document.getElementById("sort").addEventListener("click", function () {
+    const sortedValue = data.sort(function (a, b) {
+      return new Date(a.published_in) - new Date(b.published_in);
+    });
+    console.log(sortedValue);
   });
 };
 
@@ -76,16 +85,15 @@ const displayDetails = (details) => {
     accuracy,
   } = details;
 
-  console.log(details);
-
   let singleFeatures = [];
   for (const e in features) {
     singleFeatures.push(features[e]);
   }
 
   div.innerHTML = `
-  <div class="d-flex justify-content-between">
-  <div class="w-50 m-2 rounded-3 p-2 border custom-bg">
+  <div class="row">
+  <div class="col-lg-6">
+  <div class="p-3 m-2 border custom-bg rounded-3">
   <p class="fs-4 fw-bold">${description}</p>
   <div class="d-flex justify-content-evenly">
  ${
@@ -96,7 +104,10 @@ const displayDetails = (details) => {
              `<div class="py-3 text-center w-25 m-2 bg-white rounded-3 border">${e.price} <br/> ${e.plan}</div>`
          )
          .join("")}`
-     : `<p>Not found</p>`
+     : `<div class="py-3 text-center w-25 m-2 bg-white rounded-3 border">Free of <br/>Cost/ </br> Basic</div>
+     <div class="py-3 text-center w-25 m-2 bg-white rounded-3 border">Free of <br/>Cost/ </br> Pro</div>
+     <div class="py-3 text-center w-25 m-2 bg-white rounded-3 border">Free of <br/>Cost/ </br> Enterprise</div>
+     `
  }
   </div>
   <div class="d-flex justify-content-evenly">
@@ -110,32 +121,39 @@ const displayDetails = (details) => {
        ${
          integrations
            ? ` ${integrations.map((e) => `<li>${e}</li>`).join("")}`
-           : `<p class="text-center text-danger">Not found</p>`
+           : `<p class="text-center text-danger">No data found</p>`
        }
       </ul>
       </div>
   </div>
+  </div>
 
   </div>
-  <div class="w-50 m-2 p-2 rounded-3 border">
-  <div class="img-container">
-    <img src="${image_link[0]}" alt="" class="img-fluid rounded-3 border" />
-    <span class="bg-danger text-white rounded-3 p-2 accuracy">
-   ${
-     accuracy.score ? ` ${accuracy.score}% accuracy` : "Accuracy not found"
-   }</span>   
-  </div>
+  <div class="col-lg-6">
+ <div class="p-2 m-2 rounded-3 border">
+ <div class="img-container">
+ <img src="${image_link[0]}" alt="" class="img-fluid rounded-3 border" />
+
+
  ${
-   input_output_examples
-     ? ` <p class="text-center">${input_output_examples[0].input}</p>`
-     : `<p class="text-center text-danger">Not found</p>`
+   accuracy.score
+     ? `<span class="bg-danger text-white rounded-3 p-2 accuracy">${accuracy.score}% accuracy</span>  `
+     : ""
  }
- ${
-   input_output_examples
-     ? ` <p class="text-center">${input_output_examples[0].output}</p>`
-     : `<p class="text-center text-danger">Not found</p>`
- }
-  </div>
+
+</div>
+${
+  input_output_examples
+    ? ` <p class="text-center">${input_output_examples[0].input}</p>`
+    : `<p class="text-center text-danger">No! Not Yet! take a break!!!</p>`
+}
+${
+  input_output_examples
+    ? ` <p class="text-center">${input_output_examples[0].output}</p>`
+    : `<p class="text-center text-danger">No! Not Yet! take a break!!!</p>`
+}
+</div>
+ </div>
   </div>
   `;
   container.appendChild(div);
