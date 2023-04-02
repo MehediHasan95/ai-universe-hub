@@ -1,22 +1,31 @@
-const loadAllData = () => {
+const loadAllData = (limit) => {
+  console.log(limit);
   fetch("https://openapi.programming-hero.com/api/ai/tools")
     .then((res) => res.json())
     .then((data) => {
       if (data.data.tools.length) {
-        displayData(data.data.tools);
+        displayData(data.data.tools, limit);
         loadingSpinner("d-none");
       } else {
         loadingSpinner("block");
       }
     });
 };
-loadAllData();
 
+loadAllData(0);
 document.getElementById("see-more").addEventListener("click", function () {
-  more = data.length;
+  loadAllData(100);
 });
 
-const displayData = (data) => {
+const displayData = (data, limit) => {
+  const showAll = document.getElementById("see-more");
+  if (limit < 6) {
+    data = data.slice(0, 6);
+    showAll.classList.remove("d-none");
+  } else {
+    showAll.classList.add("d-none");
+  }
+
   const container = document.getElementById("data-container");
   data.forEach((elements) => {
     const div = document.createElement("div");
