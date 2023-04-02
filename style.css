@@ -1,9 +1,13 @@
 .main-card {
-  height: 400px;
+  height: 380px;
   position: relative;
 }
 
 .card-details {
   position: absolute;
   bottom: 0;
+}
+
+.custom-bg {
+  background-color: #fef7f7;
 }
